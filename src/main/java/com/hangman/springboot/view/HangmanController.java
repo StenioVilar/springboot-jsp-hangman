@@ -14,21 +14,31 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 public class HangmanController {
 
     private static final String XML_PATH = "src/main/resources/static/xml/words.xml";
     private static final String XML_NODE = "word";
+    private static final String INITIAL_PAGE = "hangman";
+    private static final Integer RANDOM_ADJUSTMENT = 1;
 
     @GetMapping({"/", "/hangman"})
     public String initialPage(Model model) {
         ArrayList<String> hangmanWords = readXML();
-        return "hangman";
+        String chosenWord = chooseWord(hangmanWords);
+        return INITIAL_PAGE;
+    }
+
+    private String chooseWord(ArrayList<String> hangmanWords) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(hangmanWords.size() - RANDOM_ADJUSTMENT);
+        return hangmanWords.get(randomIndex);
     }
 
     private ArrayList<String> readXML(){
-        ArrayList<String> xmlWords = new ArrayList<String>();
+        ArrayList<String> xmlWords = new ArrayList<>();
         try {
             File fXmlFile = new File(XML_PATH);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -40,13 +50,12 @@ public class HangmanController {
                 Node nNode = nList.item(temp);
 
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
                     xmlWords.add(nNode.getTextContent());
                 }
             }
 
         }catch (Exception e){
-            //Do Something
+            System.out.println("EXCEPTION : " + e.getMessage());
         }
         return xmlWords;
     }
