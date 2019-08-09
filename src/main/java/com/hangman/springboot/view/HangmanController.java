@@ -28,6 +28,7 @@ public class HangmanController {
     public String initialPage(Model model) {
         ArrayList<String> hangmanWords = readXML();
         String chosenWord = chooseWord(hangmanWords);
+        model.addAttribute("chosenWord", chosenWord);
         return INITIAL_PAGE;
     }
 
@@ -59,4 +60,5 @@ public class HangmanController {
         }
         return xmlWords;
     }
+
 }
